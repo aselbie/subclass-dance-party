@@ -25,14 +25,14 @@ $(document).ready(function(){
       var dancer = new dancerMakerFunction(
         $("body").height() * Math.random(),
         $("body").width() * Math.random(),
-        200
+        Math.random() * 1500 + 1500
       );
       window.dancers.push(dancer);
       $('body').append(dancer.$node);
     };
   });
 
-  var check = function() {
+  var checkPositions = function() {
     var positions = [];
     for (var i = 0; i < window.dancers.length; i++) {
       positions.push(window.dancers[i].$node.position());
@@ -55,12 +55,16 @@ $(document).ready(function(){
       if (window.dancers[i] instanceof FancyDancer) {
         window.dancers[i].changeColorByProximity(positions[i].nearest);
       }
+      if (window.dancers[i] instanceof BouncyDancer) {
+        window.dancers[i].bounce(positions[i].nearest);
+      }
     };
 
 
-    setTimeout(check, 50);
+
+    setTimeout(checkPositions, 50);
   }
-  check();
+  checkPositions();
 
 
 });
