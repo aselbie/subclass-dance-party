@@ -21,13 +21,47 @@ $(document).ready(function(){
     var dancerMakerFunction = window[dancerMakerFunctionName];
 
     // make a dancer with a random position
-
-    var dancer = dancerMakerFunction(
-      $("body").height() * Math.random(),
-      $("body").width() * Math.random(),
-      Math.random() * 1000
-    );
-    $('body').append(dancer.$node);
+    for (var i = 0; i < 10; i++) {
+      var dancer = new dancerMakerFunction(
+        $("body").height() * Math.random(),
+        $("body").width() * Math.random(),
+        200
+      );
+      window.dancers.push(dancer);
+      $('body').append(dancer.$node);
+    };
   });
+
+  var check = function() {
+    var positions = [];
+    for (var i = 0; i < window.dancers.length; i++) {
+      positions.push(window.dancers[i].$node.position());
+      positions[i].nearest = Infinity;
+    };
+
+    for (var i = 0; i < positions.length; i++) {
+      for (var k = i + 1; k < positions.length; k++) {
+        var distance = Math.sqrt(Math.pow(positions[i].top - positions[k].top, 2) + Math.pow(positions[i].left - positions[k].left, 2));
+        if (distance < positions[i].nearest) {
+          positions[i].nearest = distance;
+        }
+        if (distance < positions[k].nearest) {
+          positions[k].nearest = distance;
+        }
+      }
+    };
+
+    for (var i = 0; i < window.dancers.length; i++) {
+      if (window.dancers[i] instanceof FancyDancer) {
+        window.dancers[i].changeColorByProximity(positions[i].nearest);
+      }
+    };
+
+
+    setTimeout(check, 50);
+  }
+  check();
+
+
 });
 
